@@ -1,3 +1,24 @@
+#!/bin/sh
+# Osama's Auto Rice Boostrapping Script (OARBS)
+# by Osama Ahmed <hello@osamaahmed.me>
+# inspired and based on the work of Luke Smith (LARBS) <luke@lukesmith.xyz>
+
+# Options and variables
+
+while getopts ":a:r:b:p:h" o; do case "${o}" in
+    h) printf "Optional arguments for custom use:\\n  -r: Dotfiles repository (local file or url)\\n  -b: Dotfiles branch (master is the default)\\n  -a: AUR helper (must have pacman-like syntax)\\n  -p: Dependencies and programs csv (local file or url)\\n  -h: Show this message\\n" && exit 1;;
+    r) dotfilesrepo=${OPTARG} && git ls-remote "$dotfilesrepo" || exit 1;;
+    b) dotfilesbranch=${OPTARG} ;;
+    a) aurhelper=${OPTARG} ;;
+    p) progsfile="${OPTARG}" ;;
+    *) printf "Invalid option: -%s\\n" "$OPTARG" && exit 1;;
+esac done
+
+[ -z "$dotfilesrepo" ] && dotfilesrepo="https://github.com/osama-su/.dotfiles.git"
+[ -z "$progsfile" ] && progsfile="https://raw.githubusercontent.com/osama-su/OARBS/main/progs.csv"
+[ -z "$dotfilesbranch" ] && dotfilesbranch="master"
+[ -z "$aurhelper" ] && aurhelper="yay"
+
 # Functions
 
 welcomemessage() { \
@@ -9,5 +30,5 @@ welcomemessage() { \
 #
 welcomemessage || { echo "OARBS installation was cancelled."; exit 1; }
 # Make zsh the default shell
-chsh -s /bin/zsh "$name" >/dev/null 2>&1
-sudo -u "$name" mkdir -p "/home/$name/.config/zsh/"
+# chsh -s /bin/zsh "$name" >/dev/null 2>&1
+# sudo -u "$name" mkdir -p "/home/$name/.config/zsh/"
